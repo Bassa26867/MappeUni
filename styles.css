@@ -1,0 +1,89 @@
+/* styles.css */
+
+/* ===========================================
+   Reset e Stili di Base
+   =========================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+/* ===========================================
+   Mappa
+   =========================================== */
+#map {
+  height: 600px;
+  width: 100%;
+}
+
+/* ===========================================
+   Navbar (Bootstrap gestisce la maggior parte degli stili)
+   =========================================== */
+/* Se desideri personalizzare ulteriormente la navbar, puoi aggiungere qui le regole */
+
+/* ===========================================
+   Sidebar Informativa
+   =========================================== */
+.sidebar {
+  position: absolute;
+  top: 60px; /* Spazio per la navbar */
+  right: 0;
+  width: 300px;
+  height: calc(100% - 60px);
+  background: #fff;
+  padding: 15px;
+  overflow-y: auto;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+  display: none;
+  z-index: 1000;
+}
+
+.sidebar.active {
+  display: block;
+}
+
+.sidebar h5 {
+  margin-bottom: 10px;
+}
+
+.sidebar p {
+  margin-bottom: 15px;
+}
+
+/* Bottone di chiusura della sidebar */
+#sidebar-close {
+  margin-top: 10px;
+}
+
+/* ===========================================
+   Altri Stili e Personalizzazioni
+   =========================================== */
+
+/* Personalizza i marker se necessario (questi sono gestiti via JS con le icone personalizzate)
+   ma qui potresti inserire regole per eventuali tooltip o popup personalizzati */
+.leaflet-popup-content-wrapper {
+  font-size: 14px;
+}
+
+/* ===========================================
+   Media Query per Dispositivi Mobili
+   =========================================== */
+@media (max-width: 768px) {
+  /* Adattare la sidebar per schermi piccoli */
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    top: 0;
+    box-shadow: none;
+  }
+
+  /* Se desideri regole specifiche per la mappa su mobile, aggiungile qui */
+}

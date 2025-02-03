@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mappa Università d'Italia</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+
+  <style>
+    #map { height: 600px; width: 100%; }
+    .sidebar {
+      position: absolute; top: 60px; right: 0; width: 300px;
+      height: calc(100% - 60px); background: #fff; padding: 15px;
+      overflow-y: auto; box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+      display: none; z-index: 1000;
+    }
+    .sidebar.active { display: block; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Mappa Università d'Italia</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarControls">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarControls">
+        <input id="search-input" class="form-control me-2" type="search" placeholder="Cerca un'università">
+        <button id="btn-search" class="btn btn-primary">Cerca</button>
+      </div>
+    </div>
+  </nav>
+
+  <div id="map"></div>
+  <div id="sidebar" class="sidebar">
+    <h5 id="sidebar-title"></h5>
+    <p id="sidebar-description"></p>
+    <button id="sidebar-close" class="btn btn-sm btn-secondary">Chiudi</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+  
+  <script>
+    var universitaItalia = [
+      { id: "statale", nome: "Università degli Studi di Milano", coord: [45.4627, 9.1938], descrizione: "La principale università pubblica di Milano." },
+      { id: "bocconi", nome: "Università Bocconi", coord: [45.4450, 9.1899], descrizione: "Università privata specializzata in economia e management." },
+      { id: "polimi", nome: "Politecnico di Milano", coord: [45.4781, 9.2282], descrizione: "Una delle migliori università tecniche d'Europa." },
+      { id: "cattolica", nome: "Università Cattolica del Sacro Cuore", coord: [45.4668, 9.1864], descrizione: "Importante università privata di Milano." },
+      { id: "sanraffaele", nome: "Università Vita-Salute San Raffaele", coord: [45.5110, 9.2272], descrizione: "Università specializzata in medicina e scienze della vita." },
+      { id: "sapienza", nome: "Sapienza Università di Roma", coord: [41.9031, 12.5150], descrizione: "Una delle più antiche università d'Europa." },
+      { id: "torvergata", nome: "Università degli Studi di Roma Tor Vergata", coord: [41.8570, 12.6017], descrizione: "Importante università pubblica di Roma." },
+      { id: "firenze", nome: "Università degli Studi di Firenze", coord: [43.7793, 11.2463], descrizione: "Storica università con una vasta gamma di corsi." },
+      { id: "bologna", nome: "Università di Bologna", coord: [44.4949, 11.3426], descrizione: "L'università più antica del mondo occidentale." },
+      { id: "napoli", nome: "Università Federico II di Napoli", coord: [40.8518, 14.2681], descrizione: "Importante università pubblica fondata nel 1224." },
+      { id: "torino", nome: "Università degli Studi di Torino", coord: [45.0703, 7.6869], descrizione: "Una delle università più prestigiose d'Italia." }
+    ];
+
+    var map = L.map('map', {
+      maxBounds: [[36, 6], [47, 19]], // Limiti per visualizzare solo l'Italia
+      maxBoundsViscosity: 1.0
+    }).setView([42.5, 12.5], 6);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    var markersCluster = L.markerClusterGroup();
+    var markers = {};
+
+    universitaItalia.forEach(function(universita) {
+      var marker = L.marker(universita.coord).bindPopup(`<b>${universita.nome}</b><br>${universita.descrizione}`);
+      marker.on('click', function() {
+        document.getElementById('sidebar-title').innerText = universita.nome;
+        document.getElementById('sidebar-description').innerText = universita.descrizione;
+        document.getElementById('sidebar').classList.add('active');
+      });
+      markers[universita.id] = marker;
+      markersCluster.addLayer(marker);
+    });
+    map.addLayer(markersCluster);
+
+    document.getElementById('sidebar-close').addEventListener('click', function() {
+      document.getElementById('sidebar').classList.remove('active');
+    });
+
+    document.getElementById('btn-search').addEventListener('click', function() {
+      var query = document.getElementById('search-input').value.toLowerCase();
+      var risultato = universitaItalia.find(universita => universita.nome.toLowerCase().includes(query));
+      if (risultato) {
+        map.setView(risultato.coord, 15);
+        markers[risultato.id].openPopup();
+      } else {
+        alert("Nessun risultato trovato.");
+      }
+    });
+  </script>
+</body>
+</html>
